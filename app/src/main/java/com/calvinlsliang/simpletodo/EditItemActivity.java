@@ -1,5 +1,6 @@
 package com.calvinlsliang.simpletodo;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,17 +11,20 @@ import android.widget.EditText;
 
 public class EditItemActivity extends AppCompatActivity {
 
-    private final int RESULT_OK = 40;
-    int pos;
+
+    public static final String ITEM = "item";
+    public static final String POS = "pos";
+    public static final String ID = "id";
+    private int pos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_item);
 
-        String item = getIntent().getStringExtra("item");
-        pos = getIntent().getIntExtra("pos", 0);
-        int id = getIntent().getIntExtra("id", 0);
+        String item = getIntent().getStringExtra(ITEM);
+        pos = getIntent().getIntExtra(POS, 0);
+        int id = getIntent().getIntExtra(ID, 0);
 
         EditText etNewItem = (EditText) findViewById(R.id.eiEditText);
         etNewItem.setText(item.toString());
@@ -53,10 +57,10 @@ public class EditItemActivity extends AppCompatActivity {
     public void onSave(View v) {
         EditText saveText = (EditText) findViewById(R.id.eiEditText);
         Intent data = new Intent();
-        data.putExtra("item", saveText.getText().toString());
-        data.putExtra("pos", pos);
+        data.putExtra(ITEM, saveText.getText().toString());
+        data.putExtra(POS, pos);
 
-        setResult(RESULT_OK, data);
+        setResult(Activity.RESULT_OK, data);
         finish();
 
     }

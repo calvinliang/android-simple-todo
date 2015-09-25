@@ -1,5 +1,6 @@
 package com.calvinlsliang.simpletodo;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -23,8 +24,10 @@ public class MainActivity extends AppCompatActivity {
     ArrayAdapter<String> itemsAdapter;
     ListView lvItems;
     private final int REQUEST_CODE = 20;
-    private final int RESULT_OK = 40;
-
+    public static final String ITEM = "item";
+    public static final String POS = "pos";
+    public static final String ID = "id";
+    public static final String fileName = "todo.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,17 +69,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void launchEditItem(String item, int pos, long id) {
         Intent i = new Intent(MainActivity.this, EditItemActivity.class);
-        i.putExtra("item", item);
-        i.putExtra("pos", pos);
-        i.putExtra("id", id);
+        i.putExtra(ITEM, item);
+        i.putExtra(POS, pos);
+        i.putExtra(ID, id);
         startActivityForResult(i, REQUEST_CODE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
-            String name = data.getExtras().getString("item");
-            int pos = data.getExtras().getInt("pos");
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
+            String name = data.getExtras().getString(ITEM);
+            int pos = data.getExtras().getInt(POS);
             items.set(pos, name);
             itemsAdapter.notifyDataSetChanged();
             writeItems();
@@ -85,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void readItems() {
         File filesDir = getFilesDir();
-        File todoFile = new File(filesDir, "todo.txt");
+        File todoFile = new File(filesDir, fileName);
         try {
             items = new ArrayList<String>(FileUtils.readLines(todoFile));
         } catch (IOException e) {
@@ -95,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void writeItems() {
         File filesDir = getFilesDir();
-        File todoFile = new File(filesDir, "todo.txt");
+        File todoFile = new File(filesDir, fileName);
         try {
             FileUtils.writeLines(todoFile, items);
         } catch (IOException e) {
