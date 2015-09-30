@@ -4,14 +4,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class EditItemActivity extends AppCompatActivity {
 
-
+    private EditText etNewItem;
     public static final String ITEM = "item";
     public static final String POS = "pos";
     public static final String ID = "id";
@@ -26,10 +30,23 @@ public class EditItemActivity extends AppCompatActivity {
         pos = getIntent().getIntExtra(POS, 0);
         int id = getIntent().getIntExtra(ID, 0);
 
-        EditText etNewItem = (EditText) findViewById(R.id.eiEditText);
+        etNewItem = (EditText) findViewById(R.id.eiEditText);
         etNewItem.setText(item.toString());
         etNewItem.setSelection(etNewItem.getText().length());
+        setupListeners();
+    }
 
+    public void setupListeners() {
+        etNewItem.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    hideSoftKeyboard();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -62,6 +79,12 @@ public class EditItemActivity extends AppCompatActivity {
 
         setResult(Activity.RESULT_OK, data);
         finish();
+    }
 
+    public void hideSoftKeyboard() {
+        if (getCurrentFocus() != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
     }
 }
