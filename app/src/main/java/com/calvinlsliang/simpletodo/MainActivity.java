@@ -4,13 +4,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.apache.commons.io.FileUtils;
 
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> items;
     private ArrayAdapter<String> itemsAdapter;
     private ListView lvItems;
+    private EditText etNewText;
     private final int REQUEST_CODE = 20;
     public static final String ITEM = "item";
     public static final String POS = "pos";
@@ -33,15 +37,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         lvItems = (ListView) findViewById(R.id.lvListView);
+        etNewText = (EditText) findViewById(R.id.etNewItem);
         readItems();
         itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
         lvItems.setAdapter(itemsAdapter);
-        setupListViewListener();
+        setupListeners();
     }
 
-    public void setupListViewListener() {
+    public void setupListeners() {
         lvItems.setOnItemLongClickListener(
             new AdapterView.OnItemLongClickListener() {
                 @Override
@@ -65,6 +69,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         );
+
+        etNewText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    String itemText = etNewText.getText().toString();
+                    itemsAdapter.add(itemText);
+                    etNewText.setText("");
+                    writeItems();
+                    hideSoftKeyboard();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void launchEditItem(String item, int pos, long id) {
@@ -73,6 +92,13 @@ public class MainActivity extends AppCompatActivity {
         i.putExtra(POS, pos);
         i.putExtra(ID, id);
         startActivityForResult(i, REQUEST_CODE);
+    }
+
+    public void hideSoftKeyboard() {
+        if (getCurrentFocus() != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
     }
 
     @Override
@@ -106,12 +132,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        return true;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
