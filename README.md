@@ -4,7 +4,7 @@ Simple Todo list is an android app that allows building a todo list and basic to
 
 Submitted by: Calvin Liang
 
-Time spent: 3 hours spent in total
+Time spent: 5 hours spent in total
 
 ## User Stories
 
@@ -25,13 +25,17 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 
-* [ ] List anything else that you can get done to improve the app functionality!
+* [x] Modify user experience by mapping keyboard done to close and save the todo item.
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
+Basic functionality:
 ![Video Walkthrough](http://i.imgur.com/aJaoSlD.gif)
+
+Functional improvements:
+![Video Walkthrough](http://i.imgur.com/RnAPzn2.gif)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
